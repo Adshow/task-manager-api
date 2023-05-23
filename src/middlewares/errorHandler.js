@@ -5,12 +5,12 @@ const BaseApiError = require("../errors/baseApiError");
 
 const normalizeError = (err) => {
   if (err instanceof ValidationError) {
-    return BadRequestApiError(err.message);
+    return new BadRequestApiError(err.message);
   }
   if (err instanceof BaseApiError) {
     return err;
   }
-  return BaseApiError(err.message);
+  return new BaseApiError(err.message);
 };
 
 const errorHandler = (err, req, res, next) => {

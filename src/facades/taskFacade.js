@@ -15,6 +15,7 @@ const getAllTasks = async (user) => {
     } else if (user.role === USER_ROLES.MANAGER) {
       tasks = await taskService.findTasks();
     }
+    return tasks;
   } catch (error) {
     throw new BaseApiError("Failed to fetch tasks. Please try again later.");
   }
@@ -23,10 +24,7 @@ const getAllTasks = async (user) => {
 const createTask = async (summary, datePerformed, user) => {
   const task = await taskService.createTask(summary, datePerformed, user.id);
 
-  if (
-    process.env.NODE_ENV !== "test" &&
-    req.user.role === USER_ROLES.TECHNICIAN
-  ) {
+  if (process.env.NODE_ENV !== "test" && user.role === USER_ROLES.TECHNICIAN) {
     const manager = await userService.findUserById(user.managerId);
     const technicianName = user.name;
     sendNotificationEmail(manager.email, technicianName, task.summary);
@@ -49,6 +47,7 @@ const updateTask = async (taskId, taskData, user) => {
     await task.update(taskData);
     return task;
   } catch (error) {
+    console.log("@@@@@@@@@@", error);
     throw new BaseApiError("Failed to update task. Please try again later.");
   }
 };
