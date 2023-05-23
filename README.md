@@ -1,19 +1,15 @@
-
 # Task manager API
 
 A software to account for maintenance tasks performed during a working day
-
-
-
 
 ## Installation
 
 Install the project using npm
 
 ```bash
-  npm install project
+  npm install
 ```
-    
+
 ## Environment Variables
 
 To run this project, you will need to add the following environment variables to your .env file
@@ -38,7 +34,6 @@ To run the tests, execute the following command
 ```bash
   npm test
 ```
-
 
 ## Stack
 

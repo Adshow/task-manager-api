@@ -1,8 +1,9 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/database');
-const bcrypt = require('bcrypt');
+const { DataTypes } = require("sequelize");
+const sequelize = require("../config/database");
+const bcrypt = require("bcrypt");
+const { USER_ROLES } = require("../constants");
 
-const User = sequelize.define('User', {
+const User = sequelize.define("User", {
   id: {
     type: DataTypes.INTEGER,
     allowNull: false,
@@ -14,13 +15,16 @@ const User = sequelize.define('User', {
     allowNull: false,
   },
   role: {
-    type: DataTypes.ENUM('Manager', 'Technician'),
+    type: DataTypes.ENUM(...Object.values(USER_ROLES)),
     allowNull: false,
   },
   email: {
     type: DataTypes.STRING,
     allowNull: false,
     unique: true,
+    validate: {
+      isEmail: true,
+    },
   },
   password: {
     type: DataTypes.STRING,
@@ -34,8 +38,8 @@ const User = sequelize.define('User', {
 
 // Define the association between User and Manager (self-association)
 User.belongsTo(User, {
-  foreignKey: 'managerId',
-  as: 'manager',
+  foreignKey: "managerId",
+  as: "manager",
 });
 
 // Hash the password before saving the user
@@ -44,20 +48,13 @@ User.beforeCreate(async (user) => {
   user.password = hashedPassword;
 });
 
-User.beforeCreate((user) => {
-  if (user.role === 'Technician' && !user.managerId) {
-    throw new Error('Technician user must have a manager ID');
-  }
-});
-
 // Create the User table in the database
 User.sync()
   .then(() => {
-    console.log('User table created successfully');
+    console.log("User table created successfully");
   })
   .catch((error) => {
-    console.error('Error creating User table:', error);
+    console.error("Error creating User table:", error);
   });
 
 module.exports = User;
-

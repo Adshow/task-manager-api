@@ -1,7 +1,8 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/database');
-const User = require('./User');
-const Task = sequelize.define('Task', {
+const { DataTypes } = require("sequelize");
+const sequelize = require("../config/database");
+const User = require("./User");
+const { MESSAGE_MAX_LENGTH, MESSAGE_MIN_LENGTH } = require("../constants");
+const Task = sequelize.define("Task", {
   id: {
     type: DataTypes.INTEGER,
     allowNull: false,
@@ -12,7 +13,7 @@ const Task = sequelize.define('Task', {
     type: DataTypes.TEXT,
     allowNull: false,
     validate: {
-      len: [1, 2500],
+      len: [MESSAGE_MIN_LENGTH, MESSAGE_MAX_LENGTH],
     },
   },
   datePerformed: {
@@ -26,15 +27,15 @@ const Task = sequelize.define('Task', {
 });
 
 // Define the association between Task and User
-Task.belongsTo(User, { foreignKey: 'userId' });
+Task.belongsTo(User, { foreignKey: "userId" });
 
 // Create the Task table in the database
 Task.sync()
   .then(() => {
-    console.log('Task table created successfully');
+    console.log("Task table created successfully");
   })
   .catch((error) => {
-    console.error('Error creating Task table:', error);
+    console.error("Error creating Task table:", error);
   });
 
 module.exports = Task;
